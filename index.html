@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SelfHealthy | Saúde Mental Corporativa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="splash" class="splash">
+    <div class="splash-content">
+        <img src="logo-removebg.png" alt="Logo SelfHealthy" class="logo-img">
+        <h1 class="logo-text">SelfHealthy</h1>
+    </div>
+</div>
+
+    <main class="app-container">
+        
+        <section id="auth-screen" class="screen hidden">
+            <header class="app-header">
+                <h2>Bem-vindo</h2>
+            </header>
+            <div class="auth-box">
+                <div class="tabs">
+                    <button class="tab active" onclick="switchAuthTab('login', this)">Login</button>
+                    <button class="tab" onclick="switchAuthTab('signup', this)">Cadastro</button>
+                </div>
+                <div id="auth-form" class="fade-in">
+                    <input type="email" placeholder="E-mail corporativo" id="email">
+                    <input type="password" placeholder="Senha" id="password">
+                    <button class="btn-primary" onclick="navigateTo('dashboard')">Entrar</button>
+                    <a href="#" class="link-forgot">Esqueci minha senha</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="dashboard-screen" class="screen hidden">
+            <header class="app-header">
+                <h3>Olá, Colaborador</h3>
+            </header>
+            <div class="content p-20">
+                <div class="mood-card">
+                    <h4>Como você está se sentindo hoje?</h4>
+                    <textarea id="mood-input" placeholder="Descreva seus sentimentos aqui..."></textarea>
+                    <button class="btn-primary mt-10" onclick="handleMoodSubmit()">Enviar Reflexão</button>
+                </div>
+
+                <h3 class="section-title">Artigos Sugeridos</h3>
+                <div class="articles-grid">
+                    <article class="article-card">
+                        <div class="article-thumb purple-1"></div>
+                        <div class="article-info">
+                            <h4>Equilíbrio e Foco</h4>
+                            <p>Como manter a calma em prazos curtos.</p>
+                        </div>
+                    </article>
+                    <article class="article-card">
+                        <div class="article-thumb purple-2"></div>
+                        <div class="article-info">
+                            <h4>Pausas Ativas</h4>
+                            <p>A importância de desconectar 5 min.</p>
+                        </div>
+                    </article>
+                    <article class="article-card">
+                        <div class="article-thumb purple-3"></div>
+                        <div class="article-info">
+                            <h4>Burnout Zero</h4>
+                            <p>Sinais de que você precisa parar.</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="chat-screen" class="screen hidden">
+            <header class="app-header">
+                <h3>Atendimento Especializado</h3>
+            </header>
+            <div class="chat-wrapper" id="chat-flow">
+                </div>
+            <div class="p-20">
+                <button class="btn-outline" onclick="navigateTo('dashboard')">Voltar ao Início</button>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
