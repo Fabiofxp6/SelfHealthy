@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro | Self Healthy</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="header-container">
+      <h1 class="logo">Self <span>Healthy</span></h1>
+      <nav class="nav">
+        <a href="index.html">Início</a>
+        <a href="login.html">Login</a>
+        <a href="cadastro.html">Cadastrar</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="login-main">
+    <section class="login-card" aria-labelledby="titulo-cadastro">
+      <h2 id="titulo-cadastro">Criar nova conta</h2>
+      <p class="login-subtitle">Cadastre-se para acessar conteúdos personalizados de saúde.</p>
+
+      <form class="login-form" action="#" method="post">
+        <label for="nome">Nome completo</label>
+        <input id="nome" name="nome" type="text" placeholder="Seu nome completo" required>
+
+        <label for="email">E-mail</label>
+        <input id="email" name="email" type="email" placeholder="seuemail@exemplo.com" required>
+
+        <label for="senha">Senha</label>
+        <input id="senha" name="senha" type="password" placeholder="Crie uma senha" required>
+
+        <label for="confirmar-senha">Confirmar senha</label>
+        <input id="confirmar-senha" name="confirmar_senha" type="password" placeholder="Repita sua senha" required>
+
+        <button type="submit" class="login-button">Cadastrar</button>
+      </form>
+
+      <p class="register-text">Já tem conta? <a href="login.html">Fazer login</a></p>
+    </section>
+  </main>
+</body>
+</html>

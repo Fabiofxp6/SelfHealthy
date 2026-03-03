@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Self Healthy</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="header-container">
+      <h1 class="logo">Self <span>Healthy</span></h1>
+      <nav class="nav">
+        <a href="index.html">Início</a>
+        <a href="login.html">Login</a>
+        <a href="cadastro.html">Cadastrar</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="login-main">
+    <section class="login-card" aria-labelledby="titulo-login">
+      <h2 id="titulo-login">Entrar na sua conta</h2>
+      <p class="login-subtitle">Acesse para continuar acompanhando suas dicas de saúde.</p>
+
+      <form class="login-form" action="#" method="post">
+        <label for="email">E-mail</label>
+        <input id="email" name="email" type="email" placeholder="seuemail@exemplo.com" required>
+
+        <label for="senha">Senha</label>
+        <input id="senha" name="senha" type="password" placeholder="Digite sua senha" required>
+
+        <div class="login-options">
+          <label class="remember-me">
+            <input type="checkbox" name="lembrar">
+            Lembrar de mim
+          </label>
+          <a href="#" class="forgot-password">Esqueci minha senha</a>
+        </div>
+
+        <button type="submit" class="login-button">Entrar</button>
+      </form>
+
+      <p class="register-text">Ainda não tem conta? <a href="cadastro.html">Cadastre-se</a></p>
+    </section>
+  </main>
+</body>
+</html>
