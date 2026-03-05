@@ -7,18 +7,19 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <a href="#conteudo-principal" class="skip-link">Pular para o conteúdo principal</a>
   <header class="header">
     <div class="header-container">
       <h1 class="logo">Self <span>Healthy</span></h1>
-      <nav class="nav">
-        <a href="index.html">Início</a>
-        <a href="login.html">Login</a>
-        <a href="cadastro.html">Cadastrar</a>
+      <nav class="nav" aria-label="Navegação principal">
+        <a href="index.html" class="nav-tab">Início</a>
+        <a href="login.html" class="nav-tab active" aria-current="page">Login</a>
+        <a href="cadastro.html" class="nav-tab">Cadastrar</a>
       </nav>
     </div>
   </header>
 
-  <main class="login-main">
+  <main class="login-main" id="conteudo-principal" tabindex="-1">
     <section class="login-card" aria-labelledby="titulo-login">
       <h2 id="titulo-login">Entrar na sua conta</h2>
       <p class="login-subtitle">Acesse para continuar acompanhando suas dicas de saúde.</p>

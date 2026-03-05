@@ -7,18 +7,19 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <a href="#conteudo-principal" class="skip-link">Pular para o conteúdo principal</a>
     <header class="header">
     <div class="header-container">
       <h1 class="logo">Self <span>Healthy</span></h1>
-      <nav class="nav">
-        <a href="index.html">Início</a>
-        <a href="login.html">Login</a>
-        <a href="cadastro.html">Cadastrar</a>
+      <nav class="nav" aria-label="Navegação principal">
+        <a href="index.html" class="nav-tab active" aria-current="page">Início</a>
+        <a href="login.html" class="nav-tab">Login</a>
+        <a href="cadastro.html" class="nav-tab">Cadastrar</a>
       </nav>
     </div>
   </header>
 
-  <main class="main">
+  <main class="main" id="conteudo-principal" tabindex="-1">
     <section class="destaque">
       <article class="destaque-principal">
         <div class="badge">Destaque</div>
@@ -32,11 +33,17 @@
           <h3>Como economizar na compra de alimentos saudáveis</h3>
           <span class="meta">27 Fev 2026</span>
         </article>
-        <article class="destaque-card" button onclick="window.location.href='https://www.saude.gov.br/saude-de-a-z/saude-mental';">
+        <a
+          class="destaque-card destaque-link"
+          href="https://www.saude.gov.br/saude-de-a-z/saude-mental"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Abrir conteúdo sobre aplicativos que ajudam a monitorar sua saúde"
+        >
           <div class="badge badge-tech">Tecnologia</div>
           <h3>Aplicativos que ajudam a monitorar sua saúde</h3>
           <span class="meta">26 Fev 2026</span>
-        </article>
+        </a>
       </div>
     </section>
 
