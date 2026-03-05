@@ -17,7 +17,7 @@ a {
 /* ── Header ── */
 
 .header {
-  background-color: #6A0DAD;
+  background-color: #0d248a;
   color: #fff;
   padding: 0 1.5rem;
   position: sticky;
@@ -41,7 +41,7 @@ a {
 }
 
 .logo span {
-  color: #ede623;
+  color: #66ec6d;
 }
 
 .nav {
@@ -55,7 +55,7 @@ a {
 }
 
 .nav a:hover {
-  color: #ede623;
+  color: #66ec6d;
   transition: color 0.2s;
 }
 
@@ -324,10 +324,17 @@ a {
   outline: none;
 }
 
+.login-form input[type="text"] {
+  border: 1px solid #d5d5df;
+  border-radius: 10px;
+  padding: 0.75rem 0.9rem;
+  font-size: 0.95rem;
+  outline: none;
+}
 .login-form input[type="email"]:focus,
 .login-form input[type="password"]:focus {
-  border-color: #6A0DAD;
-  box-shadow: 0 0 0 3px rgba(106, 13, 173, 0.12);
+  border-color: #0d248a;
+  box-shadow: 0 0 0 3px rgba(13, 36, 138, 0.12);
 }
 
 .login-options {
@@ -347,7 +354,7 @@ a {
 }
 
 .forgot-password {
-  color: #6A0DAD;
+  color: #0d248a;
   font-weight: 600;
 }
 
@@ -356,7 +363,7 @@ a {
 }
 
 .login-button {
-  background-color: #6A0DAD;
+  background-color: #0d248a;
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -368,7 +375,7 @@ a {
 }
 
 .login-button:hover {
-  background-color: #550992;
+  background-color: #0d248a;
 }
 
 .register-text {
@@ -379,7 +386,7 @@ a {
 }
 
 .register-text a {
-  color: #6A0DAD;
+  color: #0d248a;
   font-weight: 700;
 }
 
