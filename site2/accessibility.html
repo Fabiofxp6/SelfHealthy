@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acessibilidade | Self Healthy</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a href="#conteudo-principal" class="skip-link">Pular para o conteúdo principal</a>
+  <header class="header">
+    <div class="header-container">
+      <h1 class="logo">Self <span>Healthy</span></h1>
+      <nav class="nav" aria-label="Navegação principal">
+        <a href="index.html" class="nav-tab">Início</a>
+        <a href="login.html" class="nav-tab">Login</a>
+        <a href="cadastro.html" class="nav-tab">Cadastrar</a>
+        <a href="accessibility.html" class="nav-tab active" aria-current="page">Acessibilidade</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="accessibility-main" id="conteudo-principal" tabindex="-1">
+    <section class="accessibility-card" aria-labelledby="titulo-acessibilidade">
+      <p class="accessibility-eyebrow">Declaração de Acessibilidade</p>
+      <h2 id="titulo-acessibilidade">Compromisso com uma experiência acessível</h2>
+      <p>
+        O Self Healthy busca oferecer um site mais inclusivo, com navegação clara,
+        estrutura semântica e recursos que facilitem o acesso ao conteúdo por diferentes pessoas.
+      </p>
+
+      <div class="accessibility-grid">
+        <article class="accessibility-item">
+          <h3>Compromisso</h3>
+          <p>
+            Trabalhamos para melhorar continuamente a acessibilidade do site, corrigindo barreiras
+            de uso e adotando boas práticas em novas atualizações.
+          </p>
+        </article>
+
+        <article class="accessibility-item">
+          <h3>Nível de conformidade</h3>
+          <p>
+            Nosso objetivo é manter conformidade parcial com as diretrizes WCAG 2.1 nível AA,
+            enquanto evoluímos os componentes e conteúdos publicados.
+          </p>
+        </article>
+
+        <article class="accessibility-item">
+          <h3>Contato para feedback</h3>
+          <p>
+            Se você encontrar qualquer dificuldade de acesso, envie sua mensagem para
+            <a href="mailto:acessibilidade@selfhealthy.com">acessibilidade@selfhealthy.com</a>
+            com a descrição do problema e, se possível, a página em que ele ocorreu.
+          </p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-container">
+      <p>© 2026 Self Healthy. Conteúdo sobre saúde e bem-estar.</p>
+      <nav class="footer-nav" aria-label="Links do rodapé">
+        <a href="accessibility.html" aria-current="page">Acessibilidade</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>
