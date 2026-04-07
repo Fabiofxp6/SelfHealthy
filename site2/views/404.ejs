@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<%- include('partials/head', { pageTitle: 'Página não encontrada | Self Healthy' }) %>
+
+<body>
+  <a href="#conteudo-principal" class="skip-link">Pular para o conteúdo principal</a>
+  <%- include('partials/navbar', { navLinks, activePage }) %>
+
+  <main class="main" id="conteudo-principal" tabindex="-1">
+    <section class="secao" aria-labelledby="titulo-404">
+      <h2 id="titulo-404">Ops! Não encontramos essa página.</h2>
+      <p>A página que você tentou acessar não existe ou foi movida.</p>
+      <a class="login-button" href="/">Voltar para o início</a>
+    </section>
+  </main>
+
+  <%- include('partials/footer', { footerActive }) %>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+</html>

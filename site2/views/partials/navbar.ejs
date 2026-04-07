@@ -1,0 +1,13 @@
+<header class="header">
+  <div class="header-container">
+    <h1 class="logo">Self <span>Healthy</span></h1>
+    <nav class="nav" aria-label="Navegação principal">
+      <% if (Array.isArray(navLinks) && navLinks.length) { %>
+        <% navLinks.forEach((link) => { %>
+          <% const isActive = link.key === activePage; %>
+          <a href="<%= link.href %>" class="nav-tab<%= isActive ? ' active' : '' %>" <%= isActive ? 'aria-current="page"' : '' %>><%= link.label %></a>
+        <% }) %>
+      <% } %>
+    </nav>
+  </div>
+</header>

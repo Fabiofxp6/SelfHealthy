@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<%- include('partials/head', { pageTitle: 'SelfHealthy' }) %>
+
+<body>
+  <a href="#conteudo-principal" class="skip-link">Pular para o conteúdo principal</a>
+  <%- include('partials/navbar', { navLinks, activePage }) %>
+
+  <main class="main" id="conteudo-principal" tabindex="-1">
+    <section class="chat-shell" aria-labelledby="chat-titulo">
+      <header class="chat-header">
+        <div>
+          <p class="chat-eyebrow">Assistente SelfHealthy</p>
+          <h2 id="chat-titulo">Converse com o suporte</h2>
+        </div>
+        <span class="chat-status" aria-live="polite" aria-atomic="true">
+          Online
+        </span>
+      </header>
+
+      <div class="chat-window" id="chatWindow" role="log" aria-live="polite" aria-relevant="additions">
+        <div class="chat-message bot">
+          <p>Oi! Posso ajudar com dicas de saúde, hábitos e dúvidas gerais. Como posso ajudar hoje?</p>
+          <span class="chat-time">Agora</span>
+        </div>
+      </div>
+
+      <form class="chat-input" id="chatForm" autocomplete="off">
+        <label for="chatMessage" class="sr-only">Digite sua mensagem</label>
+        <input type="text" id="chatMessage" name="chatMessage" placeholder="Escreva sua mensagem..." required>
+        <button type="submit" class="chat-send">Enviar</button>
+      </form>
+      <p class="chat-hint">*Respostas automáticas de demonstração (substitua pelo LangChain quando conectar).</p>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script src="/javascript/chat.js" defer></script>
+</body>
+
+</html>
