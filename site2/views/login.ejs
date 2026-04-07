@@ -28,7 +28,9 @@
         </div>
 
         <button type="submit" class="login-button">Entrar</button>
-        <div id="login-message" class="form-message" role="status" aria-live="polite"></div>
+        <div id="login-message" class="form-message <%= serverMessageType || '' %>" role="status" aria-live="polite">
+          <%= serverMessage || '' %>
+        </div>
       </form>
 
       <p class="register-text">Ainda não tem conta? <a href="/cadastro">Cadastre-se</a></p>

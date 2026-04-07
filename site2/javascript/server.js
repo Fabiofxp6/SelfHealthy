@@ -82,7 +82,9 @@ app.get('/login', (req, res) => {
     res.render('login', {
         navLinks: navLinksPublic(),
         activePage: 'login',
-        footerActive: null
+        footerActive: null,
+        serverMessage: null,
+        serverMessageType: null
     });
 });
 
@@ -137,28 +139,68 @@ const chatLimiter = rateLimit({
 });
 
 app.post('/login', authLimiter, async (req, res) => {
+    const expectsJson = req.is('application/json') || req.headers['x-requested-with'] === 'XMLHttpRequest';
     const { email, senha } = req.body;
 
     if (!email || !senha) {
-        return res.status(400).json({ ok: false, message: "Preencha e-mail e senha." });
+        if (expectsJson) {
+            return res.status(400).json({ ok: false, message: "Preencha e-mail e senha." });
+        }
+        return res.status(400).render('login', {
+            navLinks: navLinksPublic(),
+            activePage: 'login',
+            footerActive: null,
+            serverMessage: "Preencha e-mail e senha.",
+            serverMessageType: "is-error"
+        });
     }
 
     try {
         const usuario = await Usuario.findOne({ email: email.trim().toLowerCase() });
         if (!usuario) {
-            return res.status(401).json({ ok: false, message: "E-mail ou senha inválidos." });
+            if (expectsJson) {
+                return res.status(401).json({ ok: false, message: "E-mail ou senha inválidos." });
+            }
+            return res.status(401).render('login', {
+                navLinks: navLinksPublic(),
+                activePage: 'login',
+                footerActive: null,
+                serverMessage: "E-mail ou senha inválidos.",
+                serverMessageType: "is-error"
+            });
         }
 
         const senhaOk = await bcrypt.compare(senha, usuario.senhaHash);
         if (!senhaOk) {
-            return res.status(401).json({ ok: false, message: "E-mail ou senha inválidos." });
+            if (expectsJson) {
+                return res.status(401).json({ ok: false, message: "E-mail ou senha inválidos." });
+            }
+            return res.status(401).render('login', {
+                navLinks: navLinksPublic(),
+                activePage: 'login',
+                footerActive: null,
+                serverMessage: "E-mail ou senha inválidos.",
+                serverMessageType: "is-error"
+            });
         }
 
         req.session.userId = usuario._id.toString();
         req.session.userName = usuario.nome;
-        res.json({ ok: true, message: "Login realizado com sucesso!", nome: usuario.nome });
+        if (expectsJson) {
+            return res.json({ ok: true, message: "Login realizado com sucesso!", nome: usuario.nome });
+        }
+        return res.redirect('/pagina_principal');
     } catch (err) {
-        res.status(500).json({ ok: false, message: "Erro ao realizar login." });
+        if (expectsJson) {
+            return res.status(500).json({ ok: false, message: "Erro ao realizar login." });
+        }
+        return res.status(500).render('login', {
+            navLinks: navLinksPublic(),
+            activePage: 'login',
+            footerActive: null,
+            serverMessage: "Erro ao realizar login.",
+            serverMessageType: "is-error"
+        });
     }
 });
 
