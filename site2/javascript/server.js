@@ -96,6 +96,16 @@ app.get('/accessibility', (req, res) => {
     });
 });
 
+app.get('/__health', (req, res) => {
+    res.json({
+        ok: true,
+        env: process.env.VERCEL_ENV || process.env.NODE_ENV || 'unknown',
+        commit: process.env.VERCEL_GIT_COMMIT_SHA || null,
+        url: req.originalUrl,
+        hasSession: Boolean(req.session?.userId)
+    });
+});
+
 const requireAuth = (req, res, next) => {
     if (req.session?.userId) {
         return next();
@@ -341,6 +351,7 @@ app.post('/enviar', authLimiter, async (req, res) => {
 });
 
 app.use((req, res) => {
+    console.warn(`[404] ${req.method} ${req.originalUrl}`);
     res.status(404).render('404', {
         navLinks: BASE_NAV_LINKS.filter((link) => link.key !== 'accessibility'),
         activePage: null,
