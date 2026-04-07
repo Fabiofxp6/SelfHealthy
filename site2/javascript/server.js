@@ -46,7 +46,6 @@ const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
   console.error("Erro: defina a variável de ambiente MONGODB_URI.");
-  process.exit(1);
 }
 
 mongoose.set('strictQuery', true);
@@ -307,10 +306,20 @@ app.use((req, res) => {
     });
 });
 
+const connectToDatabase = async () => {
+    if (!MONGODB_URI) {
+        throw new Error("MONGODB_URI não definido.");
+    }
+    if (mongoose.connection.readyState === 1) {
+        return;
+    }
+    await mongoose.connect(MONGODB_URI);
+    console.log("Conectado ao MongoDB!");
+};
+
 const startServer = async () => {
     try {
-        await mongoose.connect(MONGODB_URI);
-        console.log("Conectado ao MongoDB!");
+        await connectToDatabase();
         app.listen(PORT, () => {
             console.log(`Servidor rodando em http://localhost:${PORT}`);
         });
@@ -320,4 +329,4 @@ const startServer = async () => {
     }
 };
 
-startServer();
+module.exports = { app, startServer, connectToDatabase };

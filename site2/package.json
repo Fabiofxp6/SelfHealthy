@@ -4,7 +4,7 @@
   "private": true,
   "main": "javascript/server.js",
   "scripts": {
-    "start": "node javascript/server.js"
+    "start": "node javascript/local.js"
   },
   "dependencies": {
     "@langchain/core": "^1.1.34",
