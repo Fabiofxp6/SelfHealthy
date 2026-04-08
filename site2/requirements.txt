@@ -1,0 +1,2 @@
+# Projeto Node.js. Dependencias estao no package.json.
+# Este arquivo existe apenas para compatibilidade com ferramentas que esperam requirements.txt.
