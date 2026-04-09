@@ -12,10 +12,10 @@ const chatSessions = new Map();
 const MAX_HISTORY = 12;
 const VIEWS_PATH = path.join(__dirname, '..', 'views');
 const BASE_NAV_LINKS = [
-  { key: 'index', label: 'Início', href: '/' },
-  { key: 'login', label: 'Login', href: '/login' },
-  { key: 'cadastro', label: 'Cadastrar', href: '/cadastro' },
-  { key: 'accessibility', label: 'Acessibilidade', href: '/accessibility' },
+    { key: 'index', label: 'Início', href: '/' },
+    { key: 'login', label: 'Login', href: '/login' },
+    { key: 'cadastro', label: 'Cadastrar', href: '/cadastro' },
+    { key: 'accessibility', label: 'Acessibilidade', href: '/accessibility' },
 ];
 const navLinksPublic = () => BASE_NAV_LINKS.filter((link) => link.key !== 'accessibility');
 
@@ -45,7 +45,7 @@ app.set('views', VIEWS_PATH);
 const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
-  console.error("Erro: defina a variável de ambiente MONGODB_URI.");
+    console.error("Erro: defina a variável de ambiente MONGODB_URI.");
 }
 
 mongoose.set('strictQuery', true);
@@ -268,6 +268,9 @@ app.post('/api/chat', requireAuth, chatLimiter, async (req, res) => {
             "O usuário pode estar emocionalmente fragilizado; valide sentimentos sem julgar.",
             "Ofereça passos simples e seguros. Não substitua atendimento profissional.",
             "Se o usuário mencionar risco de autoagressão ou suicídio, incentive buscar ajuda imediata e apoio local.",
+            "Evite termos clínicos complexos. Seja um guia amigável para o bem-estar emocional.",
+            "Não se alongue nas respostas, seja direto e objetivo.",
+            "Não faça perguntas que possam ser interpretadas como invasivas ou desrespeitosas.",
         ].join(" ");
 
         const messages = [
