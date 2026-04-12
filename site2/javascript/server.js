@@ -78,6 +78,14 @@ app.get('/cadastro', (req, res) => {
     });
 });
 
+app.get('/card1', (req, res) => {
+    res.render('card1', {
+        navLinks: navLinksPublic(),
+        activePage: 'index',
+        footerActive: null
+    });
+});
+
 app.get('/login', (req, res) => {
     res.render('login', {
         navLinks: navLinksPublic(),

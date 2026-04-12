@@ -1,2 +1,22 @@
-# Projeto Node.js. Dependencias estao no package.json.
-# Este arquivo existe apenas para compatibilidade com ferramentas que esperam requirements.txt.
+bcrypt==5.0.0
+certifi==2026.2.25
+charset-normalizer==3.4.4
+click==8.3.1
+idna==3.11
+joblib==1.5.3
+nltk==3.9.3
+numpy==2.4.2
+optional-django==0.3.0
+pandas==3.0.0
+psycopg2==2.9.11
+pwinput==1.0.3
+python-dateutil==2.9.0.post0
+react==4.3.0
+regex==2026.2.19
+requests==2.32.5
+setuptools==80.9.0
+six==1.17.0
+textblob==0.19.0
+tqdm==4.67.3
+urllib3==2.6.3
+wheel==0.45.1

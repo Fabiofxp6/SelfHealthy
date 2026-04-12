@@ -70,6 +70,7 @@ a {
   padding: 0 1.5rem;
   position: sticky;
   top: 0;
+  z-index: 1000;
 }
 
 .header-container {
@@ -126,9 +127,10 @@ a {
   max-width: 1200px;
   margin: 20px auto;
   padding: 0 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
+  padding-top: 4.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
 }
 
 /* ── Destaque ── */
@@ -430,6 +432,71 @@ a {
   font-size: 1.7rem;
   color: #2d1a3a;
   margin-bottom: 0.35rem;
+}
+
+.article-card {
+  width: 100%;
+  max-width: 900px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+  padding: 1.5rem;
+}
+
+.article-card .card {
+  border: 0;
+  width: 100%;
+}
+
+.article-card .card-header {
+  background: transparent;
+  border-bottom: 1px solid #e6e6ef;
+  padding: 1rem 1.25rem;
+}
+
+.article-card .card-title {
+  font-size: 2rem;
+  line-height: 1.2;
+  font-weight: 800;
+  color: #2d1a3a;
+  margin: 0;
+}
+
+.article-card .card-body {
+  padding: 1.25rem;
+}
+
+.article-card .card-text {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: #2f2f2f;
+  max-width: 720px;
+}
+
+.article-card h2 {
+  font-size: 1.3rem;
+  margin: 1.6rem 0 0.5rem;
+  color: #1f2a44;
+}
+
+.article-main {
+  min-height: calc(100vh - 96px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 6rem 1.5rem 4rem;
+}
+
+.article-card .card-header,
+.article-card .card-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.article-card .card-body > * {
+  width: 100%;
+  max-width: 720px;
 }
 
 .login-subtitle {
