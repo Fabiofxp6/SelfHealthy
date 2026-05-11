@@ -19,14 +19,6 @@
         <label for="senha">Senha</label>
         <input id="senha" name="senha" type="password" placeholder="Digite sua senha" required>
 
-        <div class="login-options">
-          <label class="remember-me">
-            <input type="checkbox" name="lembrar">
-            Lembrar de mim
-          </label>
-          <a href="#" class="forgot-password">Esqueci minha senha</a>
-        </div>
-
         <button type="submit" class="login-button">Entrar</button>
         <div id="login-message" class="form-message <%= serverMessageType || '' %>" role="status" aria-live="polite">
           <%= serverMessage || '' %>

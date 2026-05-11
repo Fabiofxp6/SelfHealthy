@@ -9,61 +9,113 @@
 
       <main class="main" id="conteudo-principal" tabindex="-1">
         <section class="destaque">
-          <article class="destaque-principal">
-            <div class="badge-destaque">Destaque</div>
-            <h2>Descubra como manter uma vida saudável com dicas práticas</h2>
-            <p>Aprenda sobre alimentação balanceada, exercícios físicos e bem-estar mental para uma vida plena.</p>
-            <span class="meta">Saúde &bull; 27 Fev 2026 &bull; 5 min de leitura</span>
-          </article>
-          <div class="destaque-lateral">
-            <article class="destaque-card">
-              <div class="badge-economia">Economia</div>
-              <h3>Como economizar na compra de alimentos saudáveis</h3>
-              <span class="meta">27 Fev 2026</span>
-            </article>
-            <a class="destaque-card destaque-link" href="https://www.saude.gov.br/saude-de-a-z/saude-mental"
-              target="_blank" rel="noopener noreferrer"
-              aria-label="Abrir conteúdo sobre aplicativos que ajudam a monitorar sua saúde">
-              <div class="badge-tech">Tecnologia</div>
-              <h3>Aplicativos que ajudam a monitorar sua saúde</h3>
-              <span class="meta">26 Fev 2026</span>
+          <% if (destaquePrincipal) { %>
+            <a href="/artigo/<%= destaquePrincipal._id %>" class="destaque-principal destaque-link" aria-label="Abrir <%= destaquePrincipal.titulo %>">
+              <div class="badge-tag" style="<% 
+                if (destaquePrincipal.tag === 'Esportes') { %>background:#2563eb;<% } 
+                else if (destaquePrincipal.tag === 'Alimentação') { %>background:#16a34a;<% } 
+                else if (destaquePrincipal.tag === 'Tecnologia') { %>background:#059669;<% } 
+                else if (destaquePrincipal.tag === 'Economia') { %>background:#d97706;<% } 
+                else if (destaquePrincipal.tag === 'Cultura') { %>background:#7c3aed;<% } 
+                else if (destaquePrincipal.tag === 'Política') { %>background:#dc2626;<% } 
+                else { %>background:#e94560;<% } %>"><%= destaquePrincipal.tag || 'Destaque' %></div>
+              <h2><%= destaquePrincipal.titulo %></h2>
+              <p><%= (destaquePrincipal.conteudo || '').substring(0, 150) %>...</p>
+              <span class="meta"><%= destaquePrincipal.tag || 'Saúde' %> &bull; <%= new Date(destaquePrincipal.data).toLocaleDateString('pt-BR', { day: 'numeric', month: 'short', year: 'numeric' }) %> &bull; <%= destaquePrincipal.editor %></span>
             </a>
+          <% } else { %>
+            <article class="destaque-principal destaque-vazio">
+              <div class="badge-destaque">Destaque</div>
+              <h2>Nenhum artigo em destaque no momento</h2>
+              <p>Assim que um novo conteúdo for publicado e marcado como principal, ele aparecerá aqui.</p>
+            </article>
+          <% } %>
+
+          <div class="destaque-lateral">
+            <% if (destaqueLateral1) { %>
+              <a class="destaque-card destaque-link" href="/artigo/<%= destaqueLateral1._id %>"
+                 aria-label="Abrir <%= destaqueLateral1.titulo %>">
+                <div class="badge-tag" style="<% 
+                  if (destaqueLateral1.tag === 'Esportes') { %>background:#2563eb;<% } 
+                  else if (destaqueLateral1.tag === 'Alimentação') { %>background:#16a34a;<% } 
+                  else if (destaqueLateral1.tag === 'Tecnologia') { %>background:#059669;<% } 
+                  else if (destaqueLateral1.tag === 'Economia') { %>background:#d97706;<% } 
+                  else if (destaqueLateral1.tag === 'Cultura') { %>background:#7c3aed;<% } 
+                  else if (destaqueLateral1.tag === 'Política') { %>background:#dc2626;<% } 
+                  else { %>background:#e94560;<% } %>"><%= destaqueLateral1.tag || 'Saúde' %></div>
+                <h3><%= destaqueLateral1.titulo %></h3>
+                <span class="meta"><%= new Date(destaqueLateral1.data).toLocaleDateString('pt-BR', { day: 'numeric', month: 'short', year: 'numeric' }) %></span>
+              </a>
+            <% } else { %>
+              <article class="destaque-card destaque-vazio">
+                <h3>Nenhum destaque lateral superior</h3>
+                <span class="meta">Publique um artigo e marque como destaque lateral.</span>
+              </article>
+            <% } %>
+
+            <% if (destaqueLateral2) { %>
+              <a class="destaque-card destaque-link" href="/artigo/<%= destaqueLateral2._id %>"
+                 aria-label="Abrir <%= destaqueLateral2.titulo %>">
+                <div class="badge-tag" style="<% 
+                  if (destaqueLateral2.tag === 'Esportes') { %>background:#2563eb;<% } 
+                  else if (destaqueLateral2.tag === 'Alimentação') { %>background:#16a34a;<% } 
+                  else if (destaqueLateral2.tag === 'Tecnologia') { %>background:#059669;<% } 
+                  else if (destaqueLateral2.tag === 'Economia') { %>background:#d97706;<% } 
+                  else if (destaqueLateral2.tag === 'Cultura') { %>background:#7c3aed;<% } 
+                  else if (destaqueLateral2.tag === 'Política') { %>background:#dc2626;<% } 
+                  else { %>background:#e94560;<% } %>"><%= destaqueLateral2.tag || 'Saúde' %></div>
+                <h3><%= destaqueLateral2.titulo %></h3>
+                <span class="meta"><%= new Date(destaqueLateral2.data).toLocaleDateString('pt-BR', { day: 'numeric', month: 'short', year: 'numeric' }) %></span>
+              </a>
+            <% } else { %>
+              <article class="destaque-card destaque-vazio">
+                <h3>Nenhum destaque lateral inferior</h3>
+                <span class="meta">Esse espaço será preenchido por um artigo real do painel administrativo.</span>
+              </article>
+            <% } %>
           </div>
         </section>
 
         <section class="secao">
           <h2 class="secao-titulo">Últimas Dicas de Saúde</h2>
           <div class="cards">
-            <article class="card">
-              <a href="/card1" class="card-link" aria-label="Abrir card 1" style="text-decoration: none; color: inherit;">
-                <div class="card-img" style="background-color: #2563eb;">
-                  <img src="/imgs/ExercioFisico.jpg" alt="Exercício Físico">
-                </div>
+            <% if (artigos && artigos.length > 0) { %>
+              <% artigos.forEach(artigo => { %>
+                <article class="card">
+                  <a href="/artigo/<%= artigo._id %>" class="card-link" aria-label="Abrir <%= artigo.titulo %>" style="text-decoration: none; color: inherit;">
+                    <div class="card-img">
+                      <img src="/uploads/<%= artigo.capa %>" alt="<%= artigo.titulo %>">
+                    </div>
+                    <div class="card-body">
+                      <span class="card-tag <% 
+                        if (artigo.tag === 'Esportes') { %>tag-esportes<% } 
+                        else if (artigo.tag === 'Alimentação') { %>tag-alimentacao<% } 
+                        else if (artigo.tag === 'Tecnologia') { %>tag-tech<% } 
+                        else if (artigo.tag === 'Economia') { %>tag-economia<% } 
+                        else if (artigo.tag === 'Cultura') { %>tag-cultura<% } 
+                        else if (artigo.tag === 'Política') { %>tag-politica<% } 
+                        else { %>tag-esportes<% } %>"><%= artigo.tag || 'Saúde' %></span>
+                      <h3><%= artigo.titulo %></h3>
+                      <p><%= (artigo.conteudo || '').substring(0, 100) %>...</p>
+                      <span class="meta"><%= new Date(artigo.data).toLocaleDateString('pt-BR') %> &bull; <%= artigo.editor %></span>
+                    </div>
+                  </a>
+                </article>
+              <% }) %>
+            <% } else { %>
+              <article class="card card-vazio">
                 <div class="card-body">
-                  <span class="card-tag tag-esportes">Esportes</span>
-                  <h3>Benefícios da prática regular de exercícios físicos</h3>
-                  <p>Entenda como a atividade física pode melhorar sua saúde física e mental.</p>
-                  <span class="meta">27 Fev 2026</span>
+                  <h3>Nenhum artigo publicado ainda</h3>
+                  <p>Quando novos artigos forem cadastrados no painel, eles aparecerão nesta seção principal.</p>
                 </div>
-              </a>
-            </article>
-          <article class="card">
-            <div class="card-img" style="background-color: #16a34a;">
-              <img src="/imgs/saude-mental.webp" alt="Alimentação Saudável">
-            </div>
-            <div class="card-body">
-              <span class="card-tag tag-alimentacao">Alimentação</span>
-              <h3>Dicas para uma alimentação saudável e equilibrada</h3>
-              <p>Descubra como escolher alimentos nutritivos e manter uma dieta balanceada.</p>
-              <span class="meta">26 Fev 2026</span>
-            </div>
-          </article>
+              </article>
+            <% } %>
           </div>
         </section>
       </main>
 
       <%- include('partials/footer', { footerActive }) %>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
   </body>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
 </html>

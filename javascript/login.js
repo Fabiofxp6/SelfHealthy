@@ -31,7 +31,7 @@ if (loginForm && loginMessage) {
         localStorage.setItem('usuarioNome', data.nome);
       }
       setTimeout(() => {
-        window.location.href = '/pagina_principal';
+        window.location.href = data.isAdmin ? '/admin/dashboard' : '/pagina_principal';
       }, 800);
     } catch (err) {
       loginMessage.textContent = 'Erro de conexão. Tente novamente.';

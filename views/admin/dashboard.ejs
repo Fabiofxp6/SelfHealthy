@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<%- include('../partials/head', { pageTitle: 'Admin - Dashboard' }) %>
+<body>
+    <%
+        const getTagBackground = (tag) => {
+            if (tag === 'Esportes') return '#2563eb';
+            if (tag === 'Alimentação') return '#16a34a';
+            if (tag === 'Tecnologia') return '#059669';
+            if (tag === 'Economia') return '#d97706';
+            if (tag === 'Cultura') return '#7c3aed';
+            if (tag === 'Política') return '#dc2626';
+            return '#e94560';
+        };
+    %>
+    <%- include('../partials/navbar', { navLinks, activePage: 'admin' }) %>
+
+    <main class="main">
+        <section class="secao">
+            <div class="admin-header">
+                <h1 class="secao-titulo">Gerenciamento de Artigos</h1>
+                <a href="/admin/artigo/novo" class="btn-admin-primary">Novo Artigo</a>
+            </div>
+
+            <div class="admin-table-container" style="overflow-x: auto; background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                <table style="width: 100%; border-collapse: collapse; min-width: 800px;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid #f3f4f6; text-align: left;">
+                            <th style="padding: 1rem;">Capa</th>
+                            <th style="padding: 1rem;">Título</th>
+                            <th style="padding: 1rem;">Tag</th>
+                            <th style="padding: 1rem;">Destaque</th>
+                            <th style="padding: 1rem;">Editor</th>
+                            <th style="padding: 1rem;">Data</th>
+                            <th style="padding: 1rem;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% artigos.forEach(artigo => { %>
+                            <% const tagLabel = artigo.tag || 'Saúde'; %>
+                            <% const tagBackground = getTagBackground(artigo.tag); %>
+                            <tr style="border-bottom: 1px solid #f3f4f6;">
+                                <td style="padding: 1rem;">
+                                    <img src="/uploads/<%= artigo.capa %>" alt="<%= artigo.titulo %>" style="width: 80px; height: 50px; object-fit: cover; border-radius: 4px;">
+                                </td>
+                                <td style="padding: 1rem; font-weight: 500;"><%= artigo.titulo %></td>
+                                <td style="padding: 1rem;">
+                                    <span style="display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; color: white; text-transform: uppercase; background: <%= tagBackground %>;">
+                                        <%= tagLabel %>
+                                    </span>
+                                </td>
+                                <td style="padding: 1rem;">
+                                    <% if (artigo.destaque === 'principal') { %>
+                                        <span style="display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; background: #fef3c7; color: #92400e;">⭐ Principal</span>
+                                    <% } else if (artigo.destaque === 'lateral1') { %>
+                                        <span style="display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; background: #dbeafe; color: #1e40af;">↗ Lateral Sup.</span>
+                                    <% } else if (artigo.destaque === 'lateral2') { %>
+                                        <span style="display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; background: #d1fae5; color: #065f46;">↘ Lateral Inf.</span>
+                                    <% } else { %>
+                                        <span style="color: #9ca3af; font-size: 0.85rem;">—</span>
+                                    <% } %>
+                                </td>
+                                <td style="padding: 1rem;"><%= artigo.editor || 'Sem editor' %></td>
+                                <td style="padding: 1rem;"><%= new Date(artigo.data).toLocaleDateString('pt-BR') %></td>
+                                <td style="padding: 1rem;">
+                                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                        <a href="/admin/artigo/editar/<%= artigo._id %>" style="color: #2563eb; text-decoration: none; font-weight: 600;">Editar</a>
+                                        <form action="/admin/artigo/deletar/<%= artigo._id %>" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir este artigo?');">
+                                            <button type="submit" style="background: none; border: none; color: #dc2626; font-weight: 600; cursor: pointer; padding: 0;">Excluir</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% }) %>
+                        <% if (artigos.length === 0) { %>
+                            <tr>
+                                <td colspan="7" style="padding: 2rem; text-align: center; color: #6b7280;">Nenhum artigo encontrado.</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <%- include('../partials/footer', { footerActive: null }) %>
+</body>
+</html>

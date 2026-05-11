@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<%- include('partials/head', { pageTitle: artigo.titulo + ' - SelfHealthy' }) %>
+<body>
+    <%- include('partials/navbar', { navLinks, activePage: 'index' }) %>
+
+    <main class="main">
+        <article class="secao" style="max-width: 800px; margin: 2rem auto; padding: 0 1rem;">
+            <header style="margin-bottom: 2rem;">
+                <span class="card-tag <% 
+                    if (artigo.tag === 'Esportes') { %>tag-esportes<% } 
+                    else if (artigo.tag === 'Alimentação') { %>tag-alimentacao<% } 
+                    else if (artigo.tag === 'Tecnologia') { %>tag-tech<% } 
+                    else if (artigo.tag === 'Economia') { %>tag-economia<% } 
+                    else if (artigo.tag === 'Cultura') { %>tag-cultura<% } 
+                    else if (artigo.tag === 'Política') { %>tag-politica<% } 
+                    else { %>tag-esportes<% } %>" style="margin-bottom: 1rem; display: inline-block;"><%= artigo.tag || 'Saúde' %></span>
+                <h1 style="font-size: 2.5rem; color: #1e3a8a; margin-bottom: 1rem; line-height: 1.2;"><%= artigo.titulo %></h1>
+                <div style="display: flex; align-items: center; gap: 1rem; color: #6b7280; font-size: 0.875rem;">
+                    <span>Por <strong><%= artigo.editor %></strong></span>
+                    <span>&bull;</span>
+                    <span><%= new Date(artigo.data).toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' }) %></span>
+                </div>
+            </header>
+
+            <div style="margin-bottom: 2.5rem;">
+                <img src="/uploads/<%= artigo.capa %>" alt="<%= artigo.titulo %>" 
+                     style="width: 100%; height: auto; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
+            </div>
+
+            <div style="font-size: 1.125rem; line-height: 1.8; color: #374151; white-space: pre-wrap;">
+                <%= artigo.conteudo %>
+            </div>
+
+            <footer style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid #e5e7eb;">
+                <a href="/" style="display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none; color: #2563eb; font-weight: 600;">
+                    &larr; Voltar para o início
+                </a>
+            </footer>
+        </article>
+    </main>
+
+    <%- include('partials/footer', { footerActive: null }) %>
+</body>
+</html>

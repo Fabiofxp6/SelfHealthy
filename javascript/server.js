@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const session = require('express-session');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
+const multer = require('multer');
 require('dotenv').config();
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
@@ -37,6 +38,7 @@ app.use(session({
 }));
 app.use('/css', express.static(path.join(__dirname, '..', 'css')));
 app.use('/imgs', express.static(path.join(__dirname, '..', 'imgs')));
+app.use('/uploads', express.static(path.join(__dirname, '..', 'imgs', 'uploads')));
 app.use('/javascript', express.static(path.join(__dirname, '..', 'javascript')));
 app.set('view engine', 'ejs');
 app.set('views', VIEWS_PATH);
@@ -70,31 +72,68 @@ mongoose.connection.on('error', (err) => {
 const UsuarioSchema = new mongoose.Schema({
     nome: { type: String, required: true, trim: true, minlength: 3 },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
-    senhaHash: { type: String, required: true }
+    senhaHash: { type: String, required: true },
+    isAdmin: { type: Boolean, default: false }
 }, { timestamps: true });
 const Usuario = mongoose.model('Usuario', UsuarioSchema);
 
+const ArtigoSchema = new mongoose.Schema({
+    titulo: { type: String, required: true },
+    conteudo: { type: String, required: true },
+    editor: { type: String, required: true },
+    capa: { type: String, required: true }, // Nome do arquivo salvo
+    tag: { type: String, default: 'Saúde' },
+    destaque: { type: String, enum: [null, 'principal', 'lateral1', 'lateral2'], default: null },
+    data: { type: Date, default: Date.now }
+}, { timestamps: true });
+const Artigo = mongoose.model('Artigo', ArtigoSchema);
+
+// Configuração do Multer para upload de imagens
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path.join(__dirname, '..', 'imgs', 'uploads'));
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + path.extname(file.originalname));
+    }
+});
+const upload = multer({ storage: storage });
+
 // 3. Rota para servir o formulário HTML
-app.get('/', (req, res) => {
-    res.render('index', {
-        navLinks: navLinksPublic(),
-        activePage: 'index',
-        footerActive: null
-    });
+app.get('/', async (req, res) => {
+    try {
+        const destaquePrincipal = await Artigo.findOne({ destaque: 'principal' });
+        const destaqueLateral1 = await Artigo.findOne({ destaque: 'lateral1' });
+        const destaqueLateral2 = await Artigo.findOne({ destaque: 'lateral2' });
+        const artigos = await Artigo.find({ destaque: null }).sort({ data: -1 }).limit(10);
+        res.render('index', {
+            navLinks: navLinksPublic(),
+            activePage: 'index',
+            footerActive: null,
+            artigos: artigos,
+            destaquePrincipal,
+            destaqueLateral1,
+            destaqueLateral2
+        });
+    } catch (err) {
+        console.error("Erro ao buscar artigos:", err);
+        res.render('index', {
+            navLinks: navLinksPublic(),
+            activePage: 'index',
+            footerActive: null,
+            artigos: [],
+            destaquePrincipal: null,
+            destaqueLateral1: null,
+            destaqueLateral2: null
+        });
+    }
 });
 
 app.get('/cadastro', (req, res) => {
     res.render('cadastro', {
         navLinks: navLinksPublic(),
         activePage: 'cadastro',
-        footerActive: null
-    });
-});
-
-app.get('/card1', (req, res) => {
-    res.render('card1', {
-        navLinks: navLinksPublic(),
-        activePage: 'index',
         footerActive: null
     });
 });
@@ -134,6 +173,21 @@ const requireAuth = (req, res, next) => {
     return res.redirect('/login');
 };
 
+const requireAdmin = async (req, res, next) => {
+    if (!req.session?.userId) {
+        return res.redirect('/login');
+    }
+    try {
+        const usuario = await Usuario.findById(req.session.userId);
+        if (usuario && usuario.isAdmin) {
+            return next();
+        }
+        return res.status(403).send("Acesso negado. Apenas administradores podem acessar esta área.");
+    } catch (err) {
+        return res.status(500).send("Erro interno ao verificar permissões.");
+    }
+};
+
 app.get('/pagina_principal', requireAuth, (req, res) => {
     res.render('pagina_principal', {
         navLinks: [{ key: 'logout', label: 'Sair', href: '/logout' }],
@@ -154,6 +208,111 @@ app.get('/login.html', (req, res) => res.redirect(301, '/login'));
 app.get('/cadastro.html', (req, res) => res.redirect(301, '/cadastro'));
 app.get('/accessibility.html', (req, res) => res.redirect(301, '/accessibility'));
 app.get('/pagina_principal.html', (req, res) => res.redirect(301, '/pagina_principal'));
+
+// --- ROTAS ADMINISTRATIVAS ---
+
+app.get('/admin/dashboard', requireAdmin, async (req, res) => {
+    try {
+        const artigos = await Artigo.find().sort({ data: -1 });
+        res.render('admin/dashboard', {
+            navLinks: [{ key: 'logout', label: 'Sair', href: '/logout' }],
+            artigos: artigos
+        });
+    } catch (err) {
+        res.status(500).send("Erro ao carregar dashboard.");
+    }
+});
+
+app.get('/admin/artigo/novo', requireAdmin, (req, res) => {
+    res.render('admin/artigo_form', {
+        navLinks: [{ key: 'logout', label: 'Sair', href: '/logout' }],
+        artigo: null
+    });
+});
+
+app.post('/admin/artigo/novo', requireAdmin, upload.single('capa'), async (req, res) => {
+    const { titulo, conteudo, editor, tag, destaque } = req.body;
+    const capa = req.file ? req.file.filename : null;
+
+    if (!titulo || !conteudo || !editor || !capa) {
+        return res.status(400).send("Todos os campos são obrigatórios, incluindo a imagem de capa.");
+    }
+
+    try {
+        const destaqueValue = destaque || null;
+        // Se esse artigo vai ocupar uma posição de destaque, remove o anterior dessa posição
+        if (destaqueValue) {
+            await Artigo.updateMany({ destaque: destaqueValue }, { destaque: null });
+        }
+        const novoArtigo = new Artigo({ titulo, conteudo, editor, capa, tag: tag || 'Saúde', destaque: destaqueValue });
+        await novoArtigo.save();
+        res.redirect('/admin/dashboard');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Erro ao salvar artigo.");
+    }
+});
+
+app.get('/admin/artigo/editar/:id', requireAdmin, async (req, res) => {
+    try {
+        const artigo = await Artigo.findById(req.params.id);
+        if (!artigo) return res.status(404).send("Artigo não encontrado.");
+        res.render('admin/artigo_form', {
+            navLinks: [{ key: 'logout', label: 'Sair', href: '/logout' }],
+            artigo: artigo
+        });
+    } catch (err) {
+        res.status(500).send("Erro ao carregar artigo.");
+    }
+});
+
+app.post('/admin/artigo/editar/:id', requireAdmin, upload.single('capa'), async (req, res) => {
+    const { titulo, conteudo, editor, tag, destaque } = req.body;
+    const destaqueValue = destaque || null;
+    let updateData = { titulo, conteudo, editor, tag: tag || 'Saúde', destaque: destaqueValue };
+
+    if (req.file) {
+        updateData.capa = req.file.filename;
+    }
+
+    try {
+        // Se esse artigo vai ocupar uma posição de destaque, remove o anterior dessa posição
+        if (destaqueValue) {
+            await Artigo.updateMany(
+                { destaque: destaqueValue, _id: { $ne: req.params.id } },
+                { destaque: null }
+            );
+        }
+        await Artigo.findByIdAndUpdate(req.params.id, updateData);
+        res.redirect('/admin/dashboard');
+    } catch (err) {
+        res.status(500).send("Erro ao atualizar artigo.");
+    }
+});
+
+app.post('/admin/artigo/deletar/:id', requireAdmin, async (req, res) => {
+    try {
+        await Artigo.findByIdAndDelete(req.params.id);
+        res.redirect('/admin/dashboard');
+    } catch (err) {
+        res.status(500).send("Erro ao deletar artigo.");
+    }
+});
+
+app.get('/artigo/:id', async (req, res) => {
+    try {
+        const artigo = await Artigo.findById(req.params.id);
+        if (!artigo) return res.status(404).render('404', { navLinks: navLinksPublic(), activePage: null, footerActive: null });
+        res.render('artigo', {
+            navLinks: navLinksPublic(),
+            activePage: 'index',
+            footerActive: null,
+            artigo: artigo
+        });
+    } catch (err) {
+        res.status(500).send("Erro ao carregar artigo.");
+    }
+});
 
 const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
@@ -217,8 +376,19 @@ app.post('/login', authLimiter, async (req, res) => {
 
         req.session.userId = usuario._id.toString();
         req.session.userName = usuario.nome;
+        req.session.isAdmin = usuario.isAdmin;
+
         if (expectsJson) {
-            return res.json({ ok: true, message: "Login realizado com sucesso!", nome: usuario.nome });
+            return res.json({ 
+                ok: true, 
+                message: "Login realizado com sucesso!", 
+                nome: usuario.nome,
+                isAdmin: usuario.isAdmin 
+            });
+        }
+        
+        if (usuario.isAdmin) {
+            return res.redirect('/admin/dashboard');
         }
         return res.redirect('/pagina_principal');
     } catch (err) {
@@ -377,7 +547,7 @@ app.post('/enviar', authLimiter, async (req, res) => {
 app.use((req, res) => {
     console.warn(`[404] ${req.method} ${req.originalUrl}`);
     res.status(404).render('404', {
-        navLinks: BASE_NAV_LINKS.filter((link) => link.key !== 'accessibility'),
+        navLinks: navLinksPublic(),
         activePage: null,
         footerActive: null
     });

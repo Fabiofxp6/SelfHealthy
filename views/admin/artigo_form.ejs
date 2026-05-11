@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<%- include('../partials/head', { pageTitle: artigo ? 'Admin - Editar Artigo' : 'Admin - Novo Artigo' }) %>
+<body>
+    <%- include('../partials/navbar', { navLinks, activePage: 'admin' }) %>
+
+    <main class="main">
+        <section class="secao">
+            <h1 class="secao-titulo"><%= artigo ? 'Editar Artigo' : 'Novo Artigo' %></h1>
+
+            <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); max-width: 800px; margin: 0 auto;">
+                <form action="<%= artigo ? '/admin/artigo/editar/' + artigo._id : '/admin/artigo/novo' %>" method="POST" enctype="multipart/form-data">
+                    <div style="margin-bottom: 1.5rem;">
+                        <label for="titulo" style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Título do Artigo</label>
+                        <input type="text" id="titulo" name="titulo" value="<%= artigo ? artigo.titulo : '' %>" required 
+                               style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px; font-size: 1rem;">
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <label for="editor" style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Nome do Editor</label>
+                        <input type="text" id="editor" name="editor" value="<%= artigo ? artigo.editor : '' %>" required 
+                               style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px; font-size: 1rem;">
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                        <div style="flex: 1;">
+                            <label for="tag" style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Tag / Categoria</label>
+                            <select id="tag" name="tag" 
+                                    style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px; font-size: 1rem; background: white;">
+                                <option value="Saúde" <%= artigo && artigo.tag === 'Saúde' ? 'selected' : '' %>>Saúde</option>
+                                <option value="Esportes" <%= artigo && artigo.tag === 'Esportes' ? 'selected' : '' %>>Esportes</option>
+                                <option value="Alimentação" <%= artigo && artigo.tag === 'Alimentação' ? 'selected' : '' %>>Alimentação</option>
+                                <option value="Tecnologia" <%= artigo && artigo.tag === 'Tecnologia' ? 'selected' : '' %>>Tecnologia</option>
+                                <option value="Economia" <%= artigo && artigo.tag === 'Economia' ? 'selected' : '' %>>Economia</option>
+                                <option value="Cultura" <%= artigo && artigo.tag === 'Cultura' ? 'selected' : '' %>>Cultura</option>
+                                <option value="Política" <%= artigo && artigo.tag === 'Política' ? 'selected' : '' %>>Política</option>
+                            </select>
+                        </div>
+
+                        <div style="flex: 1;">
+                            <label for="destaque" style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Posição de Destaque</label>
+                            <select id="destaque" name="destaque" 
+                                    style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px; font-size: 1rem; background: white;">
+                                <option value="" <%= (!artigo || !artigo.destaque) ? 'selected' : '' %>>Nenhum (lista normal)</option>
+                                <option value="principal" <%= artigo && artigo.destaque === 'principal' ? 'selected' : '' %>>Destaque Principal (grande)</option>
+                                <option value="lateral1" <%= artigo && artigo.destaque === 'lateral1' ? 'selected' : '' %>>Destaque Lateral Superior</option>
+                                <option value="lateral2" <%= artigo && artigo.destaque === 'lateral2' ? 'selected' : '' %>>Destaque Lateral Inferior</option>
+                            </select>
+                            <p style="font-size: 0.8rem; color: #6b7280; margin-top: 0.25rem;">Se outra matéria já ocupar a posição, ela será substituída.</p>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <label for="capa" style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Foto/Capa</label>
+                        <% if (artigo && artigo.capa) { %>
+                            <div style="margin-bottom: 0.5rem;">
+                                <img src="/uploads/<%= artigo.capa %>" alt="Capa atual" style="width: 150px; border-radius: 4px;">
+                                <p style="font-size: 0.875rem; color: #6b7280;">Capa atual. Selecione outra para alterar.</p>
+                            </div>
+                        <% } %>
+                        <input type="file" id="capa" name="capa" <%= artigo ? '' : 'required' %> accept="image/*"
+                               style="width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 6px; font-size: 1rem;">
+                    </div>
+
+                    <div style="margin-bottom: 2rem;">
+                        <label for="conteudo" style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Conteúdo do Artigo</label>
+                        <textarea id="conteudo" name="conteudo" rows="12" required 
+                                  style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px; font-size: 1rem; line-height: 1.6;"><%= artigo ? artigo.conteudo : '' %></textarea>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                        <a href="/admin/dashboard" style="padding: 0.75rem 1.5rem; border: 1px solid #d1d5db; border-radius: 6px; text-decoration: none; color: #374151; font-weight: 600;">Cancelar</a>
+                        <button type="submit" class="btn-chat" style="padding: 0.75rem 2rem; border: none; cursor: pointer; font-size: 1rem;">
+                            <%= artigo ? 'Salvar Alterações' : 'Publicar Artigo' %>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <%- include('../partials/footer', { footerActive: null }) %>
+</body>
+</html>
