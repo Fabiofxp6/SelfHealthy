@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const session = require('express-session');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
+const fs = require('fs');
 const multer = require('multer');
 require('dotenv').config();
 const app = express();
@@ -12,6 +13,7 @@ let cachedModelPromise = null;
 const chatSessions = new Map();
 const MAX_HISTORY = 12;
 const VIEWS_PATH = path.join(__dirname, '..', 'views');
+const UPLOADS_PATH = path.join(__dirname, '..', 'imgs', 'uploads');
 const BASE_NAV_LINKS = [
     { key: 'index', label: 'Início', href: '/' },
     { key: 'login', label: 'Login', href: '/login' },
@@ -38,10 +40,16 @@ app.use(session({
 }));
 app.use('/css', express.static(path.join(__dirname, '..', 'css')));
 app.use('/imgs', express.static(path.join(__dirname, '..', 'imgs')));
-app.use('/uploads', express.static(path.join(__dirname, '..', 'imgs', 'uploads')));
+app.use('/uploads', express.static(UPLOADS_PATH));
 app.use('/javascript', express.static(path.join(__dirname, '..', 'javascript')));
 app.set('view engine', 'ejs');
 app.set('views', VIEWS_PATH);
+
+const ensureUploadsDirectory = () => {
+    fs.mkdirSync(UPLOADS_PATH, { recursive: true });
+};
+
+ensureUploadsDirectory();
 
 // 1. Conexão com o MongoDB (Substitua pela sua URL do Atlas)
 const normalizeEnvValue = (value) => {
@@ -91,7 +99,8 @@ const Artigo = mongoose.model('Artigo', ArtigoSchema);
 // Configuração do Multer para upload de imagens
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, '..', 'imgs', 'uploads'));
+        ensureUploadsDirectory();
+        cb(null, UPLOADS_PATH);
     },
     filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);

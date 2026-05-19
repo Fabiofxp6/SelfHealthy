@@ -1,2 +1,16 @@
 cd "/Users/fabiomarques/Documents/Novo SHealthy/site2"
 npm start
+
+
+
+1. Criar docker-compose.yaml
+    - Container do site
+    - Container do banco de dados
+    - Container do nginx
+2. Subir imagem para o docker hub
+
+
+Github
+- Proteger branch main
+- Realizar CI/CD
+- Ativar as issues e pull requests
