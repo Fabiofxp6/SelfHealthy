@@ -2,9 +2,10 @@
 <html lang="pt-br">
 <%- include('partials/head', { pageTitle: artigo.titulo + ' - SelfHealthy' }) %>
 <body>
-    <%- include('partials/navbar', { navLinks, activePage: 'index' }) %>
+    <a href="#conteudo-principal" class="skip-link">Pular para o conteúdo principal</a>
+    <%- include('partials/navbar', { navLinks, activePage }) %>
 
-    <main class="main">
+    <main class="main" id="conteudo-principal" tabindex="-1">
         <article class="secao" style="max-width: 800px; margin: 2rem auto; padding: 0 1rem;">
             <header style="margin-bottom: 2rem;">
                 <span class="card-tag <% 
@@ -23,18 +24,20 @@
                 </div>
             </header>
 
-            <div style="margin-bottom: 2.5rem;">
-                <img src="/uploads/<%= artigo.capa %>" alt="<%= artigo.titulo %>" 
-                     style="width: 100%; height: auto; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
-            </div>
+            <% if (artigo.capa) { %>
+                <div style="margin-bottom: 2.5rem;">
+                    <img src="/uploads/<%= artigo.capa %>" alt="<%= artigo.titulo %>" 
+                         style="width: 100%; height: auto; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
+                </div>
+            <% } %>
 
             <div style="font-size: 1.125rem; line-height: 1.8; color: #374151; white-space: pre-wrap;">
                 <%= artigo.conteudo %>
             </div>
 
             <footer style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid #e5e7eb;">
-                <a href="/" style="display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none; color: #2563eb; font-weight: 600;">
-                    &larr; Voltar para o início
+                <a href="/blog" style="display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none; color: #2563eb; font-weight: 600;">
+                    &larr; Voltar para o blog
                 </a>
             </footer>
         </article>

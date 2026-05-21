@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<%- include('partials/head', { pageTitle: 'SelfHealthy | Perfil' }) %>
+
+<body>
+  <a href="#conteudo-principal" class="skip-link">Pular para o conteúdo principal</a>
+  <%- include('partials/navbar', { navLinks, activePage }) %>
+
+  <main class="main" id="conteudo-principal" tabindex="-1">
+    <section class="profile-shell" aria-labelledby="perfil-titulo">
+      <div class="profile-header">
+        <p class="chat-eyebrow">Perfil do usuário</p>
+        <h1 id="perfil-titulo"><%= usuario.nome %></h1>
+        <p>Consulte abaixo as informações cadastradas na sua conta SelfHealthy.</p>
+      </div>
+
+      <div class="profile-grid">
+        <article class="profile-card">
+          <span class="profile-label">Nome completo</span>
+          <strong><%= usuario.nome %></strong>
+        </article>
+
+        <article class="profile-card">
+          <span class="profile-label">E-mail</span>
+          <strong><%= usuario.email %></strong>
+        </article>
+
+        <article class="profile-card">
+          <span class="profile-label">Tipo de conta</span>
+          <strong><%= usuario.isAdmin ? 'Administrador' : 'Usuário' %></strong>
+        </article>
+
+        <article class="profile-card">
+          <span class="profile-label">Conta criada em</span>
+          <strong><%= new Date(usuario.createdAt).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }) %></strong>
+        </article>
+
+        <article class="profile-card">
+          <span class="profile-label">Última atualização cadastral</span>
+          <strong><%= new Date(usuario.updatedAt).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }) %></strong>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <%- include('partials/footer', { footerActive }) %>
+</body>
+
+</html>

@@ -26,11 +26,14 @@
             </div>
           </div>
 
+          <p id="chat-status-announcer" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
+
           <form class="chat-input" id="chatForm" autocomplete="off">
             <label for="chatMessage" class="sr-only">Digite sua mensagem</label>
-            <input type="text" id="chatMessage" name="chatMessage" placeholder="Escreva sua mensagem..." required>
+            <input type="text" id="chatMessage" name="chatMessage" placeholder="Escreva sua mensagem..." required aria-describedby="chat-help">
             <button type="submit" class="chat-send">Enviar</button>
           </form>
+          <p id="chat-help" class="chat-hint">Após enviar, a resposta será anunciada quando estiver concluída.</p>
         </section>
       </main>
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>

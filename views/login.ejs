@@ -9,18 +9,20 @@
 
   <main class="login-main" id="conteudo-principal" tabindex="-1">
     <section class="login-card" aria-labelledby="titulo-login">
-      <h2 id="titulo-login">Entrar na sua conta</h2>
-      <p class="login-subtitle">Acesse para continuar acompanhando suas dicas de saúde.</p>
+      <h1 id="titulo-login">Entrar na sua conta</h1>
+      <p class="login-subtitle">Faça login para acessar o blog, seu perfil e o Assistente SH.</p>
 
       <form class="login-form" action="/login" method="post" id="login-form" novalidate>
         <label for="email">E-mail</label>
-        <input id="email" name="email" type="email" placeholder="seuemail@exemplo.com" required>
+        <input id="email" name="email" type="email" placeholder="seuemail@exemplo.com" autocomplete="email" required aria-describedby="email-error login-message">
+        <p id="email-error" class="field-error" hidden></p>
 
         <label for="senha">Senha</label>
-        <input id="senha" name="senha" type="password" placeholder="Digite sua senha" required>
+        <input id="senha" name="senha" type="password" placeholder="Digite sua senha" autocomplete="current-password" required aria-describedby="senha-error login-message">
+        <p id="senha-error" class="field-error" hidden></p>
 
         <button type="submit" class="login-button">Entrar</button>
-        <div id="login-message" class="form-message <%= serverMessageType || '' %>" role="status" aria-live="polite">
+        <div id="login-message" class="form-message <%= serverMessageType || '' %>" role="status" aria-live="polite" aria-atomic="true">
           <%= serverMessage || '' %>
         </div>
       </form>

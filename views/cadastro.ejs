@@ -9,24 +9,28 @@
 
   <main class="login-main" id="conteudo-principal" tabindex="-1">
     <section class="login-card" aria-labelledby="titulo-cadastro">
-      <h2 id="titulo-cadastro">Criar nova conta</h2>
-      <p class="login-subtitle">Cadastre-se para acessar conteúdos personalizados de saúde.</p>
+      <h1 id="titulo-cadastro">Criar nova conta</h1>
+      <p class="login-subtitle">Crie sua conta para entrar no blog, visualizar seu perfil e usar o Assistente SH.</p>
 
       <form class="login-form" action="/enviar" method="post" id="cadastro-form" novalidate>
         <label for="nome">Nome completo <span>*</span></label>
-        <input id="nome" name="nome" type="text" placeholder="Seu nome completo" required>
+        <input id="nome" name="nome" type="text" placeholder="Seu nome completo" autocomplete="name" required aria-describedby="nome-error form-message">
+        <p id="nome-error" class="field-error" hidden></p>
 
         <label for="email">E-mail <span>*</span></label>
-        <input id="email" name="email" type="email" placeholder="seuemail@exemplo.com" required>
+        <input id="email" name="email" type="email" placeholder="seuemail@exemplo.com" autocomplete="email" required aria-describedby="email-error form-message">
+        <p id="email-error" class="field-error" hidden></p>
 
         <label for="senha">Senha <span>*</span></label>
-        <input id="senha" name="senha" type="password" placeholder="Crie uma senha" required>
+        <input id="senha" name="senha" type="password" placeholder="Crie uma senha" autocomplete="new-password" required aria-describedby="senha-error form-message">
+        <p id="senha-error" class="field-error" hidden></p>
 
         <label for="confirmar-senha">Confirmar senha <span>*</span></label>
-        <input id="confirmar-senha" name="confirmar_senha" type="password" placeholder="Repita sua senha" required>
+        <input id="confirmar-senha" name="confirmar_senha" type="password" placeholder="Repita sua senha" autocomplete="new-password" required aria-describedby="confirmar-senha-error form-message">
+        <p id="confirmar-senha-error" class="field-error" hidden></p>
 
         <button type="submit" class="login-button">Cadastrar</button>
-        <div id="form-message" class="form-message" role="status" aria-live="polite"></div>
+        <div id="form-message" class="form-message" role="status" aria-live="polite" aria-atomic="true"></div>
       </form>
 
       <p class="register-text">Já tem conta? <a href="/login">Fazer login</a></p>

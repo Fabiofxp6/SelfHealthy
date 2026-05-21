@@ -1,121 +1,93 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 
-<%- include('partials/head', { pageTitle: 'SelfHealthy' }) %>
+<%- include('partials/head', { pageTitle: 'SelfHealthy | Início' }) %>
 
-  <body>
-    <a href="#conteudo-principal" class="skip-link">Pular para o conteúdo principal</a>
-    <%- include('partials/navbar', { navLinks, activePage }) %>
+<body>
+  <a href="#conteudo-principal" class="skip-link">Pular para o conteúdo principal</a>
+  <%- include('partials/navbar', { navLinks, activePage }) %>
 
-      <main class="main" id="conteudo-principal" tabindex="-1">
-        <section class="destaque">
-          <% if (destaquePrincipal) { %>
-            <a href="/artigo/<%= destaquePrincipal._id %>" class="destaque-principal destaque-link" aria-label="Abrir <%= destaquePrincipal.titulo %>">
-              <div class="badge-tag" style="<% 
-                if (destaquePrincipal.tag === 'Esportes') { %>background:#2563eb;<% } 
-                else if (destaquePrincipal.tag === 'Alimentação') { %>background:#16a34a;<% } 
-                else if (destaquePrincipal.tag === 'Tecnologia') { %>background:#059669;<% } 
-                else if (destaquePrincipal.tag === 'Economia') { %>background:#d97706;<% } 
-                else if (destaquePrincipal.tag === 'Cultura') { %>background:#7c3aed;<% } 
-                else if (destaquePrincipal.tag === 'Política') { %>background:#dc2626;<% } 
-                else { %>background:#e94560;<% } %>"><%= destaquePrincipal.tag || 'Destaque' %></div>
-              <h2><%= destaquePrincipal.titulo %></h2>
-              <p><%= (destaquePrincipal.conteudo || '').substring(0, 150) %>...</p>
-              <span class="meta"><%= destaquePrincipal.tag || 'Saúde' %> &bull; <%= new Date(destaquePrincipal.data).toLocaleDateString('pt-BR', { day: 'numeric', month: 'short', year: 'numeric' }) %> &bull; <%= destaquePrincipal.editor %></span>
-            </a>
-          <% } else { %>
-            <article class="destaque-principal destaque-vazio">
-              <div class="badge-destaque">Destaque</div>
-              <h2>Nenhum artigo em destaque no momento</h2>
-              <p>Assim que um novo conteúdo for publicado e marcado como principal, ele aparecerá aqui.</p>
-            </article>
-          <% } %>
+  <main class="landing-main" id="conteudo-principal" tabindex="-1">
+    <section class="landing-hero" aria-labelledby="landing-titulo">
+      <div class="landing-copy">
+        <p class="landing-eyebrow">Bem-estar com orientação e conteúdo confiável</p>
+        <h1 id="landing-titulo">Sua jornada de saúde começa com informação clara e apoio contínuo.</h1>
+        <p class="landing-description">
+          O SelfHealthy reúne conteúdo sobre saúde, hábitos e autocuidado em um ambiente pensado para quem quer evoluir com mais consciência.
+        </p>
+        <div class="landing-actions">
+          <a class="login-button landing-primary" href="/login">Login</a>
+          <a class="landing-secondary" href="#quem-somos">Quem somos</a>
+        </div>
+      </div>
 
-          <div class="destaque-lateral">
-            <% if (destaqueLateral1) { %>
-              <a class="destaque-card destaque-link" href="/artigo/<%= destaqueLateral1._id %>"
-                 aria-label="Abrir <%= destaqueLateral1.titulo %>">
-                <div class="badge-tag" style="<% 
-                  if (destaqueLateral1.tag === 'Esportes') { %>background:#2563eb;<% } 
-                  else if (destaqueLateral1.tag === 'Alimentação') { %>background:#16a34a;<% } 
-                  else if (destaqueLateral1.tag === 'Tecnologia') { %>background:#059669;<% } 
-                  else if (destaqueLateral1.tag === 'Economia') { %>background:#d97706;<% } 
-                  else if (destaqueLateral1.tag === 'Cultura') { %>background:#7c3aed;<% } 
-                  else if (destaqueLateral1.tag === 'Política') { %>background:#dc2626;<% } 
-                  else { %>background:#e94560;<% } %>"><%= destaqueLateral1.tag || 'Saúde' %></div>
-                <h3><%= destaqueLateral1.titulo %></h3>
-                <span class="meta"><%= new Date(destaqueLateral1.data).toLocaleDateString('pt-BR', { day: 'numeric', month: 'short', year: 'numeric' }) %></span>
-              </a>
-            <% } else { %>
-              <article class="destaque-card destaque-vazio">
-                <h3>Nenhum destaque lateral superior</h3>
-                <span class="meta">Publique um artigo e marque como destaque lateral.</span>
-              </article>
-            <% } %>
+      <aside class="landing-highlight" aria-label="Prévia ilustrativa do Assistente SH">
+        <div class="landing-highlight-top">
+          <span class="landing-highlight-label">Assistente SH</span>
+          <h2>Uma prévia visual do atendimento dentro da plataforma.</h2>
+          <p>Este chat é apenas ilustrativo e representa como o suporte aparece para usuários logados.</p>
+        </div>
 
-            <% if (destaqueLateral2) { %>
-              <a class="destaque-card destaque-link" href="/artigo/<%= destaqueLateral2._id %>"
-                 aria-label="Abrir <%= destaqueLateral2.titulo %>">
-                <div class="badge-tag" style="<% 
-                  if (destaqueLateral2.tag === 'Esportes') { %>background:#2563eb;<% } 
-                  else if (destaqueLateral2.tag === 'Alimentação') { %>background:#16a34a;<% } 
-                  else if (destaqueLateral2.tag === 'Tecnologia') { %>background:#059669;<% } 
-                  else if (destaqueLateral2.tag === 'Economia') { %>background:#d97706;<% } 
-                  else if (destaqueLateral2.tag === 'Cultura') { %>background:#7c3aed;<% } 
-                  else if (destaqueLateral2.tag === 'Política') { %>background:#dc2626;<% } 
-                  else { %>background:#e94560;<% } %>"><%= destaqueLateral2.tag || 'Saúde' %></div>
-                <h3><%= destaqueLateral2.titulo %></h3>
-                <span class="meta"><%= new Date(destaqueLateral2.data).toLocaleDateString('pt-BR', { day: 'numeric', month: 'short', year: 'numeric' }) %></span>
-              </a>
-            <% } else { %>
-              <article class="destaque-card destaque-vazio">
-                <h3>Nenhum destaque lateral inferior</h3>
-                <span class="meta">Esse espaço será preenchido por um artigo real do painel administrativo.</span>
-              </article>
-            <% } %>
+        <section class="landing-chat-shell" aria-labelledby="landing-chat-titulo">
+          <header class="landing-chat-header">
+            <div>
+              <p class="chat-eyebrow">Assistente SelfHealthy</p>
+              <h3 id="landing-chat-titulo">Converse com o suporte</h3>
+            </div>
+            <span class="chat-status" aria-hidden="true">Online</span>
+          </header>
+
+          <div class="landing-chat-window" aria-hidden="true">
+            <div class="chat-message bot">
+              <p>Oi! Posso ajudar com dicas de saúde, hábitos e dúvidas gerais. Como posso ajudar hoje?</p>
+              <span class="chat-time">Assistente</span>
+            </div>
+
+            <div class="chat-message user">
+              <p>Quero melhorar minha rotina e cuidar melhor da minha saúde.</p>
+              <span class="chat-time">Você</span>
+            </div>
+
+            <div class="chat-message bot">
+              <p>Dentro da sua área, você encontra conteúdos do blog e apoio inicial do Assistente SH para orientar seus próximos passos.</p>
+              <span class="chat-time">Assistente</span>
+            </div>
+          </div>
+
+          <div class="landing-chat-input" aria-hidden="true">
+            <span>Escreva sua mensagem...</span>
+            <button type="button" class="chat-send">Enviar</button>
           </div>
         </section>
+      </aside>
+    </section>
 
-        <section class="secao">
-          <h2 class="secao-titulo">Últimas Dicas de Saúde</h2>
-          <div class="cards">
-            <% if (artigos && artigos.length > 0) { %>
-              <% artigos.forEach(artigo => { %>
-                <article class="card">
-                  <a href="/artigo/<%= artigo._id %>" class="card-link" aria-label="Abrir <%= artigo.titulo %>" style="text-decoration: none; color: inherit;">
-                    <div class="card-img">
-                      <img src="/uploads/<%= artigo.capa %>" alt="<%= artigo.titulo %>">
-                    </div>
-                    <div class="card-body">
-                      <span class="card-tag <% 
-                        if (artigo.tag === 'Esportes') { %>tag-esportes<% } 
-                        else if (artigo.tag === 'Alimentação') { %>tag-alimentacao<% } 
-                        else if (artigo.tag === 'Tecnologia') { %>tag-tech<% } 
-                        else if (artigo.tag === 'Economia') { %>tag-economia<% } 
-                        else if (artigo.tag === 'Cultura') { %>tag-cultura<% } 
-                        else if (artigo.tag === 'Política') { %>tag-politica<% } 
-                        else { %>tag-esportes<% } %>"><%= artigo.tag || 'Saúde' %></span>
-                      <h3><%= artigo.titulo %></h3>
-                      <p><%= (artigo.conteudo || '').substring(0, 100) %>...</p>
-                      <span class="meta"><%= new Date(artigo.data).toLocaleDateString('pt-BR') %> &bull; <%= artigo.editor %></span>
-                    </div>
-                  </a>
-                </article>
-              <% }) %>
-            <% } else { %>
-              <article class="card card-vazio">
-                <div class="card-body">
-                  <h3>Nenhum artigo publicado ainda</h3>
-                  <p>Quando novos artigos forem cadastrados no painel, eles aparecerão nesta seção principal.</p>
-                </div>
-              </article>
-            <% } %>
-          </div>
-        </section>
-      </main>
+    <section class="about-section" id="quem-somos" aria-labelledby="quem-somos-titulo">
+      <div class="about-heading">
+        <p class="landing-eyebrow">Quem somos</p>
+        <h2 id="quem-somos-titulo">Uma plataforma voltada para saúde e bem-estar de forma prática.</h2>
+      </div>
 
-      <%- include('partials/footer', { footerActive }) %>
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
+      <div class="about-grid">
+        <article class="about-card">
+          <h3>Conteúdo acessível</h3>
+          <p>Transformamos temas de saúde em orientações objetivas, com linguagem direta e foco em aplicação no dia a dia.</p>
+        </article>
+
+        <article class="about-card">
+          <h3>Acompanhamento digital</h3>
+          <p>Após entrar na sua conta, você acessa o blog e pode usar o Assistente SH para tirar dúvidas gerais e receber apoio inicial.</p>
+        </article>
+
+        <article class="about-card">
+          <h3>Experiência centralizada</h3>
+          <p>Login, conteúdos, perfil e assistente ficam organizados em um único fluxo, mais simples para o usuário.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <%- include('partials/footer', { footerActive }) %>
+</body>
 
 </html>

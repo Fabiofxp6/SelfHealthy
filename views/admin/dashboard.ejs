@@ -2,6 +2,7 @@
 <html lang="pt-br">
 <%- include('../partials/head', { pageTitle: 'Admin - Dashboard' }) %>
 <body>
+    <a href="#conteudo-principal" class="skip-link">Pular para o conteúdo principal</a>
     <%
         const getTagBackground = (tag) => {
             if (tag === 'Esportes') return '#2563eb';
@@ -15,7 +16,7 @@
     %>
     <%- include('../partials/navbar', { navLinks, activePage: 'admin' }) %>
 
-    <main class="main">
+    <main class="main" id="conteudo-principal" tabindex="-1">
         <section class="secao">
             <div class="admin-header">
                 <h1 class="secao-titulo">Gerenciamento de Artigos</h1>
@@ -41,7 +42,11 @@
                             <% const tagBackground = getTagBackground(artigo.tag); %>
                             <tr style="border-bottom: 1px solid #f3f4f6;">
                                 <td style="padding: 1rem;">
-                                    <img src="/uploads/<%= artigo.capa %>" alt="<%= artigo.titulo %>" style="width: 80px; height: 50px; object-fit: cover; border-radius: 4px;">
+                                    <% if (artigo.capa) { %>
+                                        <img src="/uploads/<%= artigo.capa %>" alt="<%= artigo.titulo %>" style="width: 80px; height: 50px; object-fit: cover; border-radius: 4px;">
+                                    <% } else { %>
+                                        <span style="color: #6b7280; font-size: 0.85rem;">Sem capa</span>
+                                    <% } %>
                                 </td>
                                 <td style="padding: 1rem; font-weight: 500;"><%= artigo.titulo %></td>
                                 <td style="padding: 1rem;">

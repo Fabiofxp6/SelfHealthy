@@ -17,10 +17,15 @@ const UPLOADS_PATH = path.join(__dirname, '..', 'imgs', 'uploads');
 const BASE_NAV_LINKS = [
     { key: 'index', label: 'Início', href: '/' },
     { key: 'login', label: 'Login', href: '/login' },
-    { key: 'cadastro', label: 'Cadastrar', href: '/cadastro' },
     { key: 'accessibility', label: 'Acessibilidade', href: '/accessibility' },
 ];
 const navLinksPublic = () => BASE_NAV_LINKS.filter((link) => link.key !== 'accessibility');
+const navLinksAuthenticated = () => ([
+    { key: 'blog', label: 'Blog', href: '/blog' },
+    { key: 'assistant', label: 'Assistente SH', href: '/pagina_principal' },
+    { key: 'profile', label: 'Perfil', href: '/perfil' },
+    { key: 'logout', label: 'Sair', href: '/logout' },
+]);
 
 // Configurações para ler os dados do formulário
 app.use(express.urlencoded({ extended: true }));
@@ -89,7 +94,7 @@ const ArtigoSchema = new mongoose.Schema({
     titulo: { type: String, required: true },
     conteudo: { type: String, required: true },
     editor: { type: String, required: true },
-    capa: { type: String, required: true }, // Nome do arquivo salvo
+    capa: { type: String, default: null }, // Nome do arquivo salvo
     tag: { type: String, default: 'Saúde' },
     destaque: { type: String, enum: [null, 'principal', 'lateral1', 'lateral2'], default: null },
     data: { type: Date, default: Date.now }
@@ -109,16 +114,24 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// 3. Rota para servir o formulário HTML
-app.get('/', async (req, res) => {
+// 3. Rota para servir a página inicial pública
+app.get('/', (req, res) => {
+    res.render('index', {
+        navLinks: [{ key: 'login', label: 'Login', href: '/login' }],
+        activePage: 'index',
+        footerActive: null
+    });
+});
+
+const renderBlog = async (req, res) => {
     try {
         const destaquePrincipal = await Artigo.findOne({ destaque: 'principal' });
         const destaqueLateral1 = await Artigo.findOne({ destaque: 'lateral1' });
         const destaqueLateral2 = await Artigo.findOne({ destaque: 'lateral2' });
         const artigos = await Artigo.find({ destaque: null }).sort({ data: -1 }).limit(10);
-        res.render('index', {
-            navLinks: navLinksPublic(),
-            activePage: 'index',
+        res.render('blog', {
+            navLinks: navLinksAuthenticated(),
+            activePage: 'blog',
             footerActive: null,
             artigos: artigos,
             destaquePrincipal,
@@ -127,9 +140,9 @@ app.get('/', async (req, res) => {
         });
     } catch (err) {
         console.error("Erro ao buscar artigos:", err);
-        res.render('index', {
-            navLinks: navLinksPublic(),
-            activePage: 'index',
+        res.render('blog', {
+            navLinks: navLinksAuthenticated(),
+            activePage: 'blog',
             footerActive: null,
             artigos: [],
             destaquePrincipal: null,
@@ -137,9 +150,12 @@ app.get('/', async (req, res) => {
             destaqueLateral2: null
         });
     }
-});
+};
 
 app.get('/cadastro', (req, res) => {
+    if (req.session?.userId) {
+        return res.redirect(req.session.isAdmin ? '/admin/dashboard' : '/blog');
+    }
     res.render('cadastro', {
         navLinks: navLinksPublic(),
         activePage: 'cadastro',
@@ -148,6 +164,9 @@ app.get('/cadastro', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
+    if (req.session?.userId) {
+        return res.redirect(req.session.isAdmin ? '/admin/dashboard' : '/blog');
+    }
     res.render('login', {
         navLinks: navLinksPublic(),
         activePage: 'login',
@@ -182,6 +201,8 @@ const requireAuth = (req, res, next) => {
     return res.redirect('/login');
 };
 
+app.get('/blog', requireAuth, renderBlog);
+
 const requireAdmin = async (req, res, next) => {
     if (!req.session?.userId) {
         return res.redirect('/login');
@@ -199,10 +220,32 @@ const requireAdmin = async (req, res, next) => {
 
 app.get('/pagina_principal', requireAuth, (req, res) => {
     res.render('pagina_principal', {
-        navLinks: [{ key: 'logout', label: 'Sair', href: '/logout' }],
-        activePage: null,
+        navLinks: navLinksAuthenticated(),
+        activePage: 'assistant',
         footerActive: null
     });
+});
+
+app.get('/perfil', requireAuth, async (req, res) => {
+    try {
+        const usuario = await Usuario.findById(req.session.userId).lean();
+        if (!usuario) {
+            req.session.destroy(() => {
+                res.clearCookie('selfhealthy.sid');
+                res.redirect('/login');
+            });
+            return;
+        }
+
+        res.render('perfil', {
+            navLinks: navLinksAuthenticated(),
+            activePage: 'profile',
+            footerActive: null,
+            usuario
+        });
+    } catch (err) {
+        res.status(500).send("Erro ao carregar perfil.");
+    }
 });
 
 app.get('/logout', (req, res) => {
@@ -213,10 +256,12 @@ app.get('/logout', (req, res) => {
 });
 
 app.get('/index.html', (req, res) => res.redirect(301, '/'));
+app.get('/blog.html', (req, res) => res.redirect(301, '/blog'));
 app.get('/login.html', (req, res) => res.redirect(301, '/login'));
 app.get('/cadastro.html', (req, res) => res.redirect(301, '/cadastro'));
 app.get('/accessibility.html', (req, res) => res.redirect(301, '/accessibility'));
 app.get('/pagina_principal.html', (req, res) => res.redirect(301, '/pagina_principal'));
+app.get('/perfil.html', (req, res) => res.redirect(301, '/perfil'));
 
 // --- ROTAS ADMINISTRATIVAS ---
 
@@ -243,8 +288,8 @@ app.post('/admin/artigo/novo', requireAdmin, upload.single('capa'), async (req, 
     const { titulo, conteudo, editor, tag, destaque } = req.body;
     const capa = req.file ? req.file.filename : null;
 
-    if (!titulo || !conteudo || !editor || !capa) {
-        return res.status(400).send("Todos os campos são obrigatórios, incluindo a imagem de capa.");
+    if (!titulo || !conteudo || !editor) {
+        return res.status(400).send("Título, conteúdo e editor são obrigatórios.");
     }
 
     try {
@@ -308,13 +353,13 @@ app.post('/admin/artigo/deletar/:id', requireAdmin, async (req, res) => {
     }
 });
 
-app.get('/artigo/:id', async (req, res) => {
+app.get('/artigo/:id', requireAuth, async (req, res) => {
     try {
         const artigo = await Artigo.findById(req.params.id);
-        if (!artigo) return res.status(404).render('404', { navLinks: navLinksPublic(), activePage: null, footerActive: null });
+        if (!artigo) return res.status(404).render('404', { navLinks: navLinksAuthenticated(), activePage: null, footerActive: null });
         res.render('artigo', {
-            navLinks: navLinksPublic(),
-            activePage: 'index',
+            navLinks: navLinksAuthenticated(),
+            activePage: 'blog',
             footerActive: null,
             artigo: artigo
         });
@@ -330,6 +375,27 @@ const authLimiter = rateLimit({
     legacyHeaders: false,
 });
 
+const buildFieldErrorMap = (entries) => Object.fromEntries(entries.filter(([, value]) => Boolean(value)));
+
+const validateRegistration = ({ nome, email, senha, confirmar_senha }) => {
+    const fieldErrors = buildFieldErrorMap([
+        ['nome', !nome ? "Preencha seu nome completo." : (nome.trim().length < 3 ? "Informe um nome com pelo menos 3 caracteres." : null)],
+        ['email', !email ? "Preencha seu e-mail." : null],
+        ['senha', !senha ? "Preencha sua senha." : (senha.length < 8 ? "A senha deve ter pelo menos 8 caracteres." : null)],
+        ['confirmar_senha', !confirmar_senha ? "Confirme sua senha." : null],
+    ]);
+
+    if (!fieldErrors.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        fieldErrors.email = "E-mail inválido.";
+    }
+
+    if (!fieldErrors.senha && !fieldErrors.confirmar_senha && senha !== confirmar_senha) {
+        fieldErrors.confirmar_senha = "As senhas não conferem.";
+    }
+
+    return fieldErrors;
+};
+
 const chatLimiter = rateLimit({
     windowMs: 60 * 1000,
     max: 10,
@@ -342,8 +408,13 @@ app.post('/login', authLimiter, async (req, res) => {
     const { email, senha } = req.body;
 
     if (!email || !senha) {
+        const fieldErrors = buildFieldErrorMap([
+            ['email', !email ? "Preencha seu e-mail." : null],
+            ['senha', !senha ? "Preencha sua senha." : null],
+        ]);
+
         if (expectsJson) {
-            return res.status(400).json({ ok: false, message: "Preencha e-mail e senha." });
+            return res.status(400).json({ ok: false, message: "Preencha os campos obrigatórios.", fieldErrors });
         }
         return res.status(400).render('login', {
             navLinks: navLinksPublic(),
@@ -358,7 +429,11 @@ app.post('/login', authLimiter, async (req, res) => {
         const usuario = await Usuario.findOne({ email: email.trim().toLowerCase() });
         if (!usuario) {
             if (expectsJson) {
-                return res.status(401).json({ ok: false, message: "E-mail ou senha inválidos." });
+                return res.status(401).json({
+                    ok: false,
+                    message: "E-mail ou senha inválidos.",
+                    fieldErrors: { email: "Verifique seu e-mail ou senha.", senha: "Verifique seu e-mail ou senha." }
+                });
             }
             return res.status(401).render('login', {
                 navLinks: navLinksPublic(),
@@ -372,7 +447,11 @@ app.post('/login', authLimiter, async (req, res) => {
         const senhaOk = await bcrypt.compare(senha, usuario.senhaHash);
         if (!senhaOk) {
             if (expectsJson) {
-                return res.status(401).json({ ok: false, message: "E-mail ou senha inválidos." });
+                return res.status(401).json({
+                    ok: false,
+                    message: "E-mail ou senha inválidos.",
+                    fieldErrors: { email: "Verifique seu e-mail ou senha.", senha: "Verifique seu e-mail ou senha." }
+                });
             }
             return res.status(401).render('login', {
                 navLinks: navLinksPublic(),
@@ -399,7 +478,7 @@ app.post('/login', authLimiter, async (req, res) => {
         if (usuario.isAdmin) {
             return res.redirect('/admin/dashboard');
         }
-        return res.redirect('/pagina_principal');
+        return res.redirect('/blog');
     } catch (err) {
         if (expectsJson) {
             return res.status(500).json({ ok: false, message: "Erro ao realizar login." });
@@ -517,22 +596,10 @@ app.post('/api/chat', requireAuth, chatLimiter, async (req, res) => {
 // 4. Rota para receber os dados do POST
 app.post('/enviar', authLimiter, async (req, res) => {
     const { nome, email, senha, confirmar_senha } = req.body;
+    const fieldErrors = validateRegistration({ nome, email, senha, confirmar_senha });
 
-    if (!nome || !email || !senha || !confirmar_senha) {
-        return res.status(400).json({ ok: false, message: "Preencha todos os campos." });
-    }
-
-    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    if (!emailOk) {
-        return res.status(400).json({ ok: false, message: "E-mail inválido." });
-    }
-
-    if (senha.length < 8) {
-        return res.status(400).json({ ok: false, message: "A senha deve ter pelo menos 8 caracteres." });
-    }
-
-    if (senha !== confirmar_senha) {
-        return res.status(400).json({ ok: false, message: "As senhas não conferem." });
+    if (Object.keys(fieldErrors).length > 0) {
+        return res.status(400).json({ ok: false, message: "Revise os campos destacados.", fieldErrors });
     }
 
     try {
@@ -547,7 +614,11 @@ app.post('/enviar', authLimiter, async (req, res) => {
         res.json({ ok: true, message: "Cadastro realizado com sucesso!" });
     } catch (err) {
         if (err.code === 11000) {
-            return res.status(409).json({ ok: false, message: "E-mail já cadastrado." });
+            return res.status(409).json({
+                ok: false,
+                message: "E-mail já cadastrado.",
+                fieldErrors: { email: "Este e-mail já está em uso." }
+            });
         }
         res.status(500).json({ ok: false, message: "Erro ao salvar." });
     }
@@ -556,7 +627,7 @@ app.post('/enviar', authLimiter, async (req, res) => {
 app.use((req, res) => {
     console.warn(`[404] ${req.method} ${req.originalUrl}`);
     res.status(404).render('404', {
-        navLinks: navLinksPublic(),
+        navLinks: req.session?.userId ? navLinksAuthenticated() : navLinksPublic(),
         activePage: null,
         footerActive: null
     });

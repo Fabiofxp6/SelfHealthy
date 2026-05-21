@@ -2,9 +2,10 @@
 <html lang="pt-br">
 <%- include('../partials/head', { pageTitle: artigo ? 'Admin - Editar Artigo' : 'Admin - Novo Artigo' }) %>
 <body>
+    <a href="#conteudo-principal" class="skip-link">Pular para o conteúdo principal</a>
     <%- include('../partials/navbar', { navLinks, activePage: 'admin' }) %>
 
-    <main class="main">
+    <main class="main" id="conteudo-principal" tabindex="-1">
         <section class="secao">
             <h1 class="secao-titulo"><%= artigo ? 'Editar Artigo' : 'Novo Artigo' %></h1>
 
@@ -57,8 +58,10 @@
                                 <img src="/uploads/<%= artigo.capa %>" alt="Capa atual" style="width: 150px; border-radius: 4px;">
                                 <p style="font-size: 0.875rem; color: #6b7280;">Capa atual. Selecione outra para alterar.</p>
                             </div>
+                        <% } else { %>
+                            <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 0.5rem;">A imagem de capa é opcional.</p>
                         <% } %>
-                        <input type="file" id="capa" name="capa" <%= artigo ? '' : 'required' %> accept="image/*"
+                        <input type="file" id="capa" name="capa" accept="image/*"
                                style="width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 6px; font-size: 1rem;">
                     </div>
 
