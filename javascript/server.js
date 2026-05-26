@@ -16,7 +16,7 @@ const VIEWS_PATH = path.join(__dirname, '..', 'views');
 const UPLOADS_PATH = path.join(__dirname, '..', 'imgs', 'uploads');
 const BASE_NAV_LINKS = [
     { key: 'index', label: 'Início', href: '/' },
-    { key: 'login', label: 'Login', href: '/login' },
+    { key: 'login', label: 'Entrar', href: '/login' },
     { key: 'accessibility', label: 'Acessibilidade', href: '/accessibility' },
 ];
 const navLinksPublic = () => BASE_NAV_LINKS.filter((link) => link.key !== 'accessibility');
@@ -117,7 +117,7 @@ const upload = multer({ storage: storage });
 // 3. Rota para servir a página inicial pública
 app.get('/', (req, res) => {
     res.render('index', {
-        navLinks: [{ key: 'login', label: 'Login', href: '/login' }],
+        navLinks: [{ key: 'login', label: 'Entrar', href: '/login' }],
         activePage: 'index',
         footerActive: null
     });
@@ -173,6 +173,17 @@ app.get('/login', (req, res) => {
         footerActive: null,
         serverMessage: null,
         serverMessageType: null
+    });
+});
+
+app.get('/esqueci-senha', (req, res) => {
+    if (req.session?.userId) {
+        return res.redirect(req.session.isAdmin ? '/admin/dashboard' : '/blog');
+    }
+    res.render('esqueci_senha', {
+        navLinks: navLinksPublic(),
+        activePage: 'login',
+        footerActive: null
     });
 });
 
@@ -259,6 +270,7 @@ app.get('/index.html', (req, res) => res.redirect(301, '/'));
 app.get('/blog.html', (req, res) => res.redirect(301, '/blog'));
 app.get('/login.html', (req, res) => res.redirect(301, '/login'));
 app.get('/cadastro.html', (req, res) => res.redirect(301, '/cadastro'));
+app.get('/esqueci-senha.html', (req, res) => res.redirect(301, '/esqueci-senha'));
 app.get('/accessibility.html', (req, res) => res.redirect(301, '/accessibility'));
 app.get('/pagina_principal.html', (req, res) => res.redirect(301, '/pagina_principal'));
 app.get('/perfil.html', (req, res) => res.redirect(301, '/perfil'));
@@ -396,6 +408,24 @@ const validateRegistration = ({ nome, email, senha, confirmar_senha }) => {
     return fieldErrors;
 };
 
+const validatePasswordReset = ({ email, senha, confirmar_senha }) => {
+    const fieldErrors = buildFieldErrorMap([
+        ['email', !email ? "Preencha seu e-mail." : null],
+        ['senha', !senha ? "Preencha a nova senha." : (senha.length < 8 ? "A senha deve ter pelo menos 8 caracteres." : null)],
+        ['confirmar_senha', !confirmar_senha ? "Confirme a nova senha." : null],
+    ]);
+
+    if (!fieldErrors.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        fieldErrors.email = "E-mail inválido.";
+    }
+
+    if (!fieldErrors.senha && !fieldErrors.confirmar_senha && senha !== confirmar_senha) {
+        fieldErrors.confirmar_senha = "As senhas não conferem.";
+    }
+
+    return fieldErrors;
+};
+
 const chatLimiter = rateLimit({
     windowMs: 60 * 1000,
     max: 10,
@@ -490,6 +520,33 @@ app.post('/login', authLimiter, async (req, res) => {
             serverMessage: "Erro ao realizar login.",
             serverMessageType: "is-error"
         });
+    }
+});
+
+app.post('/esqueci-senha', authLimiter, async (req, res) => {
+    const { email, senha, confirmar_senha } = req.body;
+    const fieldErrors = validatePasswordReset({ email, senha, confirmar_senha });
+
+    if (Object.keys(fieldErrors).length > 0) {
+        return res.status(400).json({ ok: false, message: "Revise os campos destacados.", fieldErrors });
+    }
+
+    try {
+        const usuario = await Usuario.findOne({ email: email.trim().toLowerCase() });
+        if (!usuario) {
+            return res.status(404).json({
+                ok: false,
+                message: "E-mail não encontrado.",
+                fieldErrors: { email: "Nenhuma conta cadastrada com este e-mail." }
+            });
+        }
+
+        usuario.senhaHash = await bcrypt.hash(senha, 10);
+        await usuario.save();
+
+        res.json({ ok: true, message: "Senha redefinida com sucesso!" });
+    } catch (err) {
+        res.status(500).json({ ok: false, message: "Erro ao redefinir a senha." });
     }
 });
 

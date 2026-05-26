@@ -4,7 +4,8 @@
   "private": true,
   "main": "javascript/server.js",
   "scripts": {
-    "start": "node javascript/local.js"
+    "start": "node javascript/local.js",
+    "dev": "nodemon javascript/local.js"
   },
   "dependencies": {
     "@langchain/openai": "^1.3.0",
@@ -16,5 +17,8 @@
     "express-session": "^1.18.0",
     "mongoose": "^8.5.2",
     "multer": "^2.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
   }
 }
