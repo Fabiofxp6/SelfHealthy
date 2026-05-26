@@ -1041,7 +1041,6 @@ a {
   text-align: right;
   font-weight: bold;
 }
-
 .chat-message.bot .chat-time {
   text-align: left;
   font-weight: bold;
@@ -1063,6 +1062,10 @@ a {
   background: #0d248a;
   color: #ffffff;
   align-self: flex-end;
+}
+
+.chat-message.user p {
+  color: #ffffff;
 }
 
 .chat-time {
