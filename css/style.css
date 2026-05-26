@@ -1060,7 +1060,7 @@ a {
 
 .chat-message.user {
   background: #0d248a;
-  color: #ffffff;
+  color: #000000;
   align-self: flex-end;
 }
 
