@@ -1064,7 +1064,11 @@ a {
   align-self: flex-end;
 }
 
-.chat-message.user p {
+.chat-window .chat-message.user p {
+  color: #ffffff;
+}
+
+.chat-window .chat-message.user .chat-time {
   color: #ffffff;
 }
 
